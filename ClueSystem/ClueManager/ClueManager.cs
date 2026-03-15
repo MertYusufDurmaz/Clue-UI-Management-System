@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class ClueManager : MonoBehaviour
 {
-    [Tooltip("Sahnedeki tüm ipucu görsellerini (GameObject) buraya sürükleyin.")]
+    [Tooltip("Sahnedeki tÃ¼m ipucu gÃ¶rsellerini (GameObject) buraya sÃ¼rÃ¼kleyin.")]
     public List<GameObject> clueImages;
 
-    // İpucu bulunduğunda çağrılacak (Örn: Kağıda tıkladığında)
+    // Ä°pucu bulunduÄŸunda Ã§aÄŸrÄ±lacak (Ã–rn: KaÄŸÄ±da tÄ±kladÄ±ÄŸÄ±nda)
     public void UnlockClue(string clueName)
     {
         foreach (var img in clueImages)
@@ -14,11 +14,12 @@ public class ClueManager : MonoBehaviour
             if (img.name == clueName)
             {
                 img.SetActive(true);
+                break; // EÅŸleÅŸme bulunduysa dÃ¶ngÃ¼yÃ¼ boÅŸuna yorma
             }
         }
     }
 
-    // Save Manager için: Hangi ipuçları açık?
+    // Save Manager iÃ§in: Hangi ipuÃ§larÄ± aÃ§Ä±k?
     public List<string> GetFoundClues()
     {
         List<string> found = new List<string>();
@@ -29,13 +30,13 @@ public class ClueManager : MonoBehaviour
         return found;
     }
 
-    // Save Manager için: İpuçlarını geri yükle
+    // Save Manager iÃ§in: Ä°puÃ§larÄ±nÄ± geri yÃ¼kle
     public void LoadFoundClues(List<string> savedClues)
     {
-        // Önce hepsini kapat
+        // Ã–nce hepsini kapat
         foreach (var img in clueImages) img.SetActive(false);
 
-        // Kayıtlı olanları aç
+        // KayÄ±tlÄ± olanlarÄ± aÃ§
         if (savedClues != null)
         {
             foreach (string name in savedClues)
