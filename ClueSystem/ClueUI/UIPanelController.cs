@@ -2,54 +2,44 @@ using UnityEngine;
 
 public class UIPanelController : MonoBehaviour
 {
-    [Header("Canvas Adlarý")]
+    [Header("Panel Settings")]
     [SerializeField] private string menuCanvasName = "ClueMenu";
+    
+    [Tooltip("MenÃ¼yÃ¼ aÃ§Ä±p kapatmak iÃ§in kullanÄ±lacak tuÅŸ")]
+    [SerializeField] private KeyCode toggleKey = KeyCode.Tab;
 
-    [Header("Player Kontrol Referanslarý (KULLANILMIYOR)")]
-    public MovementController playerMovement;
-    public MouseLook mouseLook;
-    public InspectionHandler inspectorHandler;
-    public GameObject crosshairUI;
-
-    // --- DÜZELTME: 'Awake' metodunun adýný 'Start' olarak deðiþtirdik ---
     void Start()
     {
         if (CanvasManager.Instance != null)
         {
-            GameObject canvasObj = gameObject.transform.Find(menuCanvasName)?.gameObject ?? GameObject.Find(menuCanvasName);
+            GameObject canvasObj = transform.Find(menuCanvasName)?.gameObject ?? GameObject.Find(menuCanvasName);
 
             if (canvasObj != null)
             {
                 CanvasManager.Instance.RegisterCanvas(menuCanvasName, canvasObj);
-                Debug.Log("ClueMenu kaydedildi: " + canvasObj.name);
             }
             else
             {
-                Debug.LogError("Start'ta " + menuCanvasName + " bulunamadý!");
+                Debug.LogWarning($"UIPanelController: '{menuCanvasName}' bulunamadÄ±!");
             }
-        }
-        else
-        {
-            Debug.LogError("CanvasManager.Instance null!");
         }
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(toggleKey))
         {
             if (CanvasManager.Instance == null) return;
 
-            if (CanvasManager.Instance.CurrentActiveCanvas != null &&
-                CanvasManager.Instance.CurrentActiveCanvas.name == menuCanvasName)
+            var activeCanvas = CanvasManager.Instance.CurrentActiveCanvas;
+
+            if (activeCanvas != null && activeCanvas.name == menuCanvasName)
             {
                 CanvasManager.Instance.CloseCanvas(menuCanvasName);
-                Debug.Log("ClueMenu kapatýldý.");
             }
             else
             {
                 CanvasManager.Instance.OpenCanvas(menuCanvasName);
-                Debug.Log("ClueMenu açýldý.");
             }
         }
     }
