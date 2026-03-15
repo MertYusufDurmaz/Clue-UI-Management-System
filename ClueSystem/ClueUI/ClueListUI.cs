@@ -6,6 +6,7 @@ public class ClueListUI : MonoBehaviour
 {
     public static ClueListUI Instance { get; private set; }
 
+    [Header("References")]
     public GameObject clueItemPrefab;
     public Transform gridLayoutGroup;
 
@@ -23,15 +24,6 @@ public class ClueListUI : MonoBehaviour
         }
     }
 
-    // --- YENÝ EKLENEN: SaveManager ile Baðlantý ---
-    void Start()
-    {
-        if (GameSaveManager.Instance != null)
-        {
-            GameSaveManager.Instance.clueListUI = this;
-        }
-    }
-
     public void AddClue(string clueText)
     {
         if (!foundClues.Contains(clueText))
@@ -41,58 +33,51 @@ public class ClueListUI : MonoBehaviour
         }
     }
 
-    // Kod tekrarýný önlemek için UI oluþturmayý ayrý metoda aldým
     private void SpawnClueObject(string text)
     {
         if (clueItemPrefab != null && gridLayoutGroup != null)
         {
             GameObject newClueItem = Instantiate(clueItemPrefab, gridLayoutGroup);
 
-            // Senin kodundaki gibi GetComponentInChildren kullanýyoruz
             TextMeshProUGUI textComponent = newClueItem.GetComponentInChildren<TextMeshProUGUI>();
+
+            if (textComponent == null)
+            {
+                textComponent = newClueItem.GetComponent<TextMeshProUGUI>();
+            }
 
             if (textComponent != null)
             {
                 textComponent.text = text;
-            }
-            else
-            {
-                // Eðer prefabýn kendisinde varsa diye ikinci bir kontrol
-                textComponent = newClueItem.GetComponent<TextMeshProUGUI>();
-                if (textComponent != null) textComponent.text = text;
             }
 
             newClueItem.SetActive(true);
         }
     }
 
-    // --- SAVE SÝSTEMÝ ÝÇÝN GEREKLÝ YENÝ METODLAR ---
-
-    // SaveManager kaydederken bu listeyi isteyecek
+    // --- SAVE SÄ°STEMÄ° Ä°Ã‡Ä°N KULLANILACAK METOTLAR ---
+    
     public List<string> GetAllClues()
     {
         return foundClues;
     }
 
-    // SaveManager yüklerken bu listeyi geri verecek
     public void LoadClues(List<string> loadedTexts)
     {
-        // 1. Önce ekrandaki eski yazýlarý temizle
+        // 1. Ekranda olanlarÄ± temizle
         foreach (Transform child in gridLayoutGroup)
         {
             Destroy(child.gameObject);
         }
-
-        // Listeyi sýfýrla
         foundClues.Clear();
 
-        // 2. Kayýtlý olanlarý tek tek ekle ve oluþtur
+        // 2. KayÄ±tlÄ± olanlarÄ± oluÅŸtur
         if (loadedTexts != null)
         {
             foreach (string txt in loadedTexts)
             {
-                foundClues.Add(txt); // Listeye ekle
-                SpawnClueObject(txt); // Ekranda oluþtur
+                foundClues.Add(txt); 
+                SpawnClueObject(txt); 
             }
         }
     }
